@@ -1,22 +1,24 @@
+use core::fmt::{Formatter, Display};
+
 #[cfg(test)]
 mod tests;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub struct State(String);
+pub struct State(pub String);
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Symbol(String);
+pub struct Symbol(pub String);
 #[derive(Debug, PartialEq, Eq)]
-pub struct TransitionResult(usize, usize, i32);
+pub struct TransitionResult(pub usize, pub usize, pub i32);
 
 #[derive(Debug)]
 pub struct TuringMachine {
-    states: Vec<State>,
-    tape_symbols: Vec<Symbol>,
-    language_symbols: Vec<Symbol>,
-    transitions: Vec<Vec<TransitionResult>>,
-    start_state: usize,
-    accept_state: usize,
-    reject_state: usize,
+    pub states: Vec<State>,
+    pub tape_symbols: Vec<Symbol>,
+    pub language_symbols: Vec<Symbol>,
+    pub transitions: Vec<Vec<TransitionResult>>,
+    pub start_state: usize,
+    pub accept_state: usize,
+    pub reject_state: usize,
 }
 
 impl TuringMachine {
@@ -122,7 +124,7 @@ pub struct TMExecution<'a> {
     current_state: usize,
     head_position: usize,
     tape: Vec<usize>,
-    status: TMStatus,
+    pub status: TMStatus,
     clock: TMClock,
 }
 
@@ -163,15 +165,6 @@ impl TMExecution<'_> {
             }
         };
 
-        if next_state == self.machine.accept_state {
-            self.status = TMStatus::Accept;
-            return;
-        } else if next_state == self.machine.reject_state {
-            self.status = TMStatus::Reject;
-            return;
-        }
-
-
         self.current_state = next_state;
         self.tape[self.head_position] = write_symbol;
         self.head_position = new_head_position;
@@ -189,6 +182,42 @@ impl TMExecution<'_> {
             }
         }
 
+        if next_state == self.machine.accept_state {
+            self.status = TMStatus::Accept;
+            return;
+        } else if next_state == self.machine.reject_state {
+            self.status = TMStatus::Reject;
+            return;
+        }
+
+    }
+
+}
+
+impl Display for TMExecution<'_> {
+
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+
+        let mut config_str: String = "".to_string();
+        let State(state_str) = &self.machine.states[self.current_state];
+
+        for (i, s_i) in self.tape.iter().enumerate() {
+
+            if i == self.head_position {
+                config_str.push_str(format!("({})", state_str).as_str());
+            }
+
+            if s_i < &self.machine.tape_symbols.len() {
+                let Symbol(s) = &self.machine.tape_symbols[*s_i];
+                config_str.push_str(s);
+            } else if 1 < *s_i && *s_i < self.machine.language_symbols.len() + 2 {
+                let Symbol(s) = &self.machine.language_symbols[*s_i - 2];
+                config_str.push_str(s);
+            }
+        }
+
+
+        write!(f, "{}", config_str)
     }
 
 }
