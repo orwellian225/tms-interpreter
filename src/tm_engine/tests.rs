@@ -17,10 +17,10 @@ fn default_tm() {
     assert_eq!(machine.accept_state, 1);
     assert_eq!(machine.reject_state, 2);
 
-    assert_eq!(machine.transitions[0][0], TransitionResult(1, 0, 1));
-    assert_eq!(machine.transitions[0][1], TransitionResult(1, 1, 1));
-    assert_eq!(machine.transitions[0][2], TransitionResult(1, 2, 1));
-    assert_eq!(machine.transitions[0][3], TransitionResult(1, 3, 1));
+    assert_eq!(machine.transitions[0][0], Transition(1, 0, 1));
+    assert_eq!(machine.transitions[0][1], Transition(1, 1, 1));
+    assert_eq!(machine.transitions[0][2], Transition(1, 2, 1));
+    assert_eq!(machine.transitions[0][3], Transition(1, 3, 1));
 }
 
 #[test]
@@ -51,24 +51,24 @@ fn last_symbol_accept() {
         ],
         transitions: vec![
             vec![
-                TransitionResult(3, 0, 1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(3, 0, 1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![], // accept transitions
             vec![], // reject transitions
             vec![
-                TransitionResult(4, 0, -1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(4, 0, -1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![
-                TransitionResult(2, 0, 1),
-                TransitionResult(2, 1, 1),
-                TransitionResult(1, 2, 1), // accept if last symbol is 0
-                TransitionResult(2, 3, 1), // reject if last symbol is 1
+                Transition(2, 0, 1),
+                Transition(2, 1, 1),
+                Transition(1, 2, 1), // accept if last symbol is 0
+                Transition(2, 3, 1), // reject if last symbol is 1
             ],
         ],
         ..TuringMachine::default()
@@ -103,24 +103,24 @@ fn last_symbol_reject() {
         ],
         transitions: vec![
             vec![
-                TransitionResult(3, 0, 1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(3, 0, 1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![], // accept transitions
             vec![], // reject transitions
             vec![
-                TransitionResult(4, 0, -1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(4, 0, -1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![
-                TransitionResult(2, 0, 1),
-                TransitionResult(2, 1, 1),
-                TransitionResult(1, 2, 1), // accept if last symbol is 0
-                TransitionResult(2, 3, 1), // reject if last symbol is 1
+                Transition(2, 0, 1),
+                Transition(2, 1, 1),
+                Transition(1, 2, 1), // accept if last symbol is 0
+                Transition(2, 3, 1), // reject if last symbol is 1
             ],
         ],
         ..TuringMachine::default()
@@ -155,24 +155,24 @@ fn last_symbol_timeout() {
         ],
         transitions: vec![
             vec![
-                TransitionResult(3, 0, 1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(3, 0, 1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![], // accept transitions
             vec![], // reject transitions
             vec![
-                TransitionResult(4, 0, -1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(4, 0, -1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![
-                TransitionResult(2, 0, 1),
-                TransitionResult(2, 1, 1),
-                TransitionResult(1, 2, 1), // accept if last symbol is 0
-                TransitionResult(2, 3, 1), // reject if last symbol is 1
+                Transition(2, 0, 1),
+                Transition(2, 1, 1),
+                Transition(1, 2, 1), // accept if last symbol is 0
+                Transition(2, 3, 1), // reject if last symbol is 1
             ],
         ],
         ..TuringMachine::default()
@@ -207,24 +207,24 @@ fn last_symbol_spaceout() {
         ],
         transitions: vec![
             vec![
-                TransitionResult(3, 0, 1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(3, 0, 1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![], // accept transitions
             vec![], // reject transitions
             vec![
-                TransitionResult(4, 0, -1),
-                TransitionResult(3, 1, 1),
-                TransitionResult(3, 2, 1),
-                TransitionResult(3, 3, 1),
+                Transition(4, 0, -1),
+                Transition(3, 1, 1),
+                Transition(3, 2, 1),
+                Transition(3, 3, 1),
             ],
             vec![
-                TransitionResult(2, 0, 1),
-                TransitionResult(2, 1, 1),
-                TransitionResult(1, 2, 1), // accept if last symbol is 0
-                TransitionResult(2, 3, 1), // reject if last symbol is 1
+                Transition(2, 0, 1),
+                Transition(2, 1, 1),
+                Transition(1, 2, 1), // accept if last symbol is 0
+                Transition(2, 3, 1), // reject if last symbol is 1
             ],
         ],
         ..TuringMachine::default()
