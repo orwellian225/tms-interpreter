@@ -1,39 +1,39 @@
 use std::time::Instant;
 
-mod tm;
+mod tm_engine;
 
 fn main() {
-    let machine = tm::TuringMachine {
+    let machine = tm_engine::deterministic::TuringMachine {
         states: vec![
-            tm::State("start".to_string()),
-            tm::State("accept".to_string()),
-            tm::State("reject".to_string()),
-            tm::State("iterate_to_end".to_string()),
-            tm::State("last_symbol_check".to_string()),
+            tm_engine::State("start".to_string()),
+            tm_engine::State("accept".to_string()),
+            tm_engine::State("reject".to_string()),
+            tm_engine::State("iterate_to_end".to_string()),
+            tm_engine::State("last_symbol_check".to_string()),
         ],
         transitions: vec![
             vec![
-                tm::TransitionResult(3, 0, 1),
-                tm::TransitionResult(3, 1, 1),
-                tm::TransitionResult(3, 2, 1),
-                tm::TransitionResult(3, 3, 1),
+                tm_engine::Transition(3, 0, 1),
+                tm_engine::Transition(3, 1, 1),
+                tm_engine::Transition(3, 2, 1),
+                tm_engine::Transition(3, 3, 1),
             ],
             vec![], // accept transitions
             vec![], // reject transitions
             vec![
-                tm::TransitionResult(4, 0, -1),
-                tm::TransitionResult(3, 1, 1),
-                tm::TransitionResult(3, 2, 1),
-                tm::TransitionResult(3, 3, 1),
+                tm_engine::Transition(4, 0, -1),
+                tm_engine::Transition(3, 1, 1),
+                tm_engine::Transition(3, 2, 1),
+                tm_engine::Transition(3, 3, 1),
             ],
             vec![
-                tm::TransitionResult(2, 0, 1),
-                tm::TransitionResult(2, 1, 1),
-                tm::TransitionResult(1, 2, 1), // accept if last symbol is 0
-                tm::TransitionResult(2, 3, 1), // reject if last symbol is 1
+                tm_engine::Transition(2, 0, 1),
+                tm_engine::Transition(2, 1, 1),
+                tm_engine::Transition(1, 2, 1), // accept if last symbol is 0
+                tm_engine::Transition(2, 3, 1), // reject if last symbol is 1
             ],
         ],
-        ..tm::TuringMachine::default()
+        ..tm_engine::deterministic::TuringMachine::default()
     };
 
     for i in (0..1_000_000_0).step_by(1_000) {
@@ -50,7 +50,7 @@ fn main() {
         };
 
         let start = Instant::now();
-        computation.compute();
+        computation.run();
         let elapsed = start.elapsed();
         let elapsed_seconds = elapsed.as_secs_f64();
 

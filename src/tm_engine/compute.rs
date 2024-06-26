@@ -1,4 +1,6 @@
 use core::fmt::{Formatter, Display};
+use std::rc::Rc;
+
 use super::deterministic::TuringMachine;
 use super::{State, Symbol, Transition};
 
@@ -32,19 +34,46 @@ pub enum CompStatus {
 }
 
 #[derive(Debug)]
-pub struct Computation<'a> {
-    machine: &'a TuringMachine,
-    current_state: usize,
-    head_position: usize,
-    tape: Vec<usize>,
+pub struct Computation {
+    pub machine: Rc<TuringMachine>,
+    pub current_state: usize,
+    pub head_position: usize,
+    pub tape: Vec<usize>,
     pub status: CompStatus,
-    clock: CompClock,
+    pub clock: CompClock,
 }
 
-impl Computation<'_> {
+impl Computation {
 
-    pub fn start(self, machine: &TuringMachine) {
+    pub fn start(machine: Rc<TuringMachine>, word: &String, limits: (Option<usize>, Option<usize>)) -> Result<Self, ()> {
+        let mut tape = vec![1];
 
+        for w in word.chars() {
+            let symbol = Symbol(w.to_string());
+            let index = match machine.language_symbols.iter().position(|x| { x == &symbol }) {
+                Some(val) => val + machine.tape_symbols.len(),
+                None => match machine.tape_symbols.iter().position(|x| { x == &symbol }) {
+                    Some(val) => val,
+                    None => return Err(todo!())
+                }
+            };
+
+            tape.push(index);
+        }
+
+        Ok(Computation {
+            machine,
+            current_state: machine.start_state,
+            head_position: 0,
+            status: CompStatus::Executing,
+            clock: CompClock {
+                time: 0,
+                time_limit: limits.0,
+                space: tape.len(),
+                space_limit: limits.1
+            },
+            tape
+        })
     }
 
     pub fn run(&mut self) {
@@ -111,7 +140,7 @@ impl Computation<'_> {
 
 }
 
-impl Display for Computation<'_> {
+impl Display for Computation {
 
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
 

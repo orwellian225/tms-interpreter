@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use super::{ Symbol, State, Transition };
 use super::compute::Computation;
 
@@ -18,34 +20,7 @@ impl TuringMachine {
     }
 
     pub fn bounded_compute(&self, word: &String, limits: (Option<usize>, Option<usize>)) -> Result<Computation, ()> {
-        let mut tape = vec![1];
-
-        for w in word.chars() {
-            let symbol = Symbol(w.to_string());
-            let index = match self.language_symbols.iter().position(|x| { x == &symbol }) {
-                Some(val) => val + self.tape_symbols.len(),
-                None => match self.tape_symbols.iter().position(|x| { x == &symbol }) {
-                    Some(val) => val,
-                    None => return Err(todo!())
-                }
-            };
-
-            tape.push(index);
-        }
-
-        Ok(TMExecution {
-            machine: &self,
-            current_state: self.start_state,
-            head_position: 0,
-            status: TMStatus::Executing,
-            clock: TMClock {
-                time: 0,
-                time_limit: limits.0,
-                space: tape.len(),
-                space_limit: limits.1
-            },
-            tape
-        })
+        Computation::start(Rc::from(*self), word, limits)
     }
 }
 
